@@ -1,0 +1,18 @@
+[
+{"text":"Accueil","url":"app.home","icon":"home","access":[],"locked":true},
+{"text":"Profile","url":"app.profile","access":[],"hideMenu":true,"icon":"account"},
+{"text":"Gestion des comptes","icon":"people","url":"app.gestioncomptes","access":[],"hideMenu":true},
+{"text":"Notifications","url":"app.notifications","access":[],"hideMenu":true,"icon":"notifications"},
+{"text":"Sessions","url":"app.sessions","access":[],"hideMenu":true,"icon":"update"},
+{"text":"Entrée des produit","url":"app.achats","icon":"add_shopping_cart","access":[{"type":"add","value":true,"icon":"plus"},{"type":"update","value":true,"icon":"edit"},{"type":"delete","value":true,"icon":"delete"}]},
+{"text":"Ventes","url":"app.ventes","icon":"ventes","access":[{"type":"add","value":true,"icon":"plus"},{"type":"update","value":true,"icon":"edit"},{"type":"delete","value":true,"icon":"delete"}]},
+{"text":"Liste Notes","url":"app.notes","icon":"chat","access":[{"type":"add", "value":true,"icon":"plus"}, {"type":"update","value":true,"icon":"edit"},{"type":"delete","value":true,"icon":"delete"}],"childrens":[]},
+{"text":"Gestion Dépenses ","url":"app.depenses","icon":"coins", "access":[{"type":"add","value":true,"icon":"plus"}, {"type":"update","value":true,"icon":"edit"} ,{"type": "delete", "value":true,"icon":"delete"}]},
+{"text":"Statistiques ","url":"app.statistiques","icon":"chart-column","access":[]},
+{"text":"Paramètres","url":"#","icon":"settings","access":[],"childrens":[
+{"text":"App Config","url":"app.settings.about", "icon":"settings","access":[]},
+{"text":"Produits","url":"app.produits","icon":"products","access":[{"type":"add","value":true,"icon":"plus"},{"type":"update","value":true,"icon":"edit"},{"type":"delete","value":true,"icon":"delete"}]},
+{"text":"Fournisseurs","url":"app.settings.fournisseurs","icon":"work","access":[{"type":"add","value":true,"icon":"plus"},{"type":"update","value":true,"icon":"edit"},{"type":"delete","value":true,"icon":"delete"}]},
+{"text":"Exportation des données ","url":"app.export","icon":"download","access":[]}
+]}
+]
