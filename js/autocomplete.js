@@ -251,7 +251,7 @@ angular.module('angucomplete', []).directive('angucomplete', function($parse, $h
             'clax': '=?clax',
             "matchClass": "@matchclass"
         },
-        template: '<div class="form-group  has-feedback has-success autocompletedh"  style="{{st}}" ><div ng-show="searching" id="demoIn" class="demo-bar mprogress-custom-parent"><div id="mprogress3" class="ui-mprogress"><div class="indeter-bar" role="mpbar3"></div><div class="bar-bg"></div></div></div><label class="control-label" for="{{id}}" ng-if="showlabel">{{title}}</label><div class="fg-line"  ><input  ng-disabled="dizabled" type="search" autocomplete="off"    ng-model="searchStr" placeholder="{{placeholder}}"  id="{{id}}" ng-class="{ok:clax,notok:!clax}" class="form-control  {{classx}} " style="{{style}}"/></div><ul ng-show="showDropdown"><li ng-if="errrored" class="palette-Red bg"  ng-click="hideDrop()">Erreur ...<span style="position: relative;right: 9px;top: 4px;" class="zmdi-warning pull-right c-red text zmdi"></span></li><li ng-repeat="x in results track by $index" ng-mousedown="selectResult(x)"   ng-mouseover="hoverRow()" ng-class="{\'selecteddh\': $index == currentIndex}">{{$index+1}} - <span ng-bind-html="x.name"></span></li><li ng-click="hideDrop()" ng-if="results.length==0 && !errrored">aucun resultat trouvé</li></ul></div>',
+        template: '<div class="form-group  has-feedback has-success autocompletedh"  style="{{st}}" ><div ng-show="searching" id="demoIn" class="demo-bar mprogress-custom-parent"><div id="mprogress3" class="ui-mprogress"><div class="indeter-bar" role="mpbar3"></div><div class="bar-bg"></div></div></div><label class="control-label" for="{{id}}" ng-if="showlabel">{{title}}</label><div class="fg-line"  ><input  ng-disabled="dizabled" type="search" autocomplete="off" ng-change="changexx()"  ng-model-options="{debounce: 500}"  ng-model="searchStr" placeholder="{{placeholder}}"  id="{{id}}" ng-class="{ok:clax,notok:!clax}" class="form-control  {{classx}} " style="{{style}}"/></div><ul ng-show="showDropdown"><li ng-if="errrored" class="palette-Red bg"  ng-click="hideDrop()">Erreur ...<span style="position: relative;right: 9px;top: 4px;" class="zmdi-warning pull-right c-red text zmdi"></span></li><li ng-repeat="x in results track by $index" ng-mousedown="selectResult(x)"   ng-mouseover="hoverRow()" ng-class="{\'selecteddh\': $index == currentIndex}">{{$index+1}} - <span ng-bind-html="x.name"></span></li><li ng-click="hideDrop()" ng-if="results.length==0 && !errrored">aucun resultat trouvé</li></ul></div>',
         link: function($scope, elem, attrs) {
             $document.on('click', function(e) {
                 if (elem !== e.target && !elem[0].contains(e.target)) {
@@ -318,24 +318,10 @@ angular.module('angucomplete', []).directive('angucomplete', function($parse, $h
 				}else{ $scope.showDropdown = true;}
             }
             var inputField = elem.find('input');
-			$scope.keyPressed = function(event) {
-                if (!(event.which == 38 || event.which == 40 || event.which == 13)) {
-                    if (!$scope.searchStr || $scope.searchStr == "") {
-                        $scope.showDropdown = false;
-                        $scope.lastSearchTerm = null
-                    } else {
-                        if ($scope.lastSearchTerm != $scope.searchStr) {
-                            $scope.currentIndex = -1;
-                            $scope.results = [];
-							$scope.changexx();
-                        }
-                    }
-                } else {
-                    event.preventDefault();
-                }
-            }
-            inputField.on('keyup', $scope.keyPressed);
+			$scope.change=true;
 			$scope.changexx=function(){
+				if(!$scope.change){$scope.change=true;return};
+				console.log($scope.searchStr,$scope.selectedObject)
 				var str=$scope.searchStr||"";
 				if (str.length >= $scope.minLength) {
                     $scope.searching = true;
@@ -362,6 +348,7 @@ angular.module('angucomplete', []).directive('angucomplete', function($parse, $h
                 if ($scope.matchClass) {
                     result.name = result.name.toString().replace(/(<([^>]+)>)/ig, '');
                 }
+				$scope.change=false;
                 $scope.searchStr = $scope.lastSearchTerm = result.name;
                 $scope.selectedObject = result.obj;
                 $scope.selectedid = result.id;
