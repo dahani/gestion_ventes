@@ -19,6 +19,10 @@ if(isset($_REQUEST['c'])){
 	if($data['test']==true){foreach($data['data'] as $d){$d=demake($d);$d['extra']=$d['name'];$d['name']=strtoupper($d['name'])." (Dépenses- ".$d['mtn']." )";$d['type']="app.depenses";$DATAX[]=$d;}}
 	
 	
+	/*Produits*/
+	$SQL="SELECT id, name FROM ".PRODUCTS." WHERE  (`name`  LIKE :Q  OR  `code`  LIKE :Q )   ORDER BY id DESC";
+	$data=SQL_QUERY($SQL." LIMIT 0,3",array(":Q"=>'%'.$txt.'%'));
+	if($data['test']==true){foreach($data['data'] as $d){$d=demake($d);$d['name']=strtoupper($d['name'])." (Produits)";$d['type']="app.produits";$DATAX[]=$d;}}
 	
 	echo json_encode($DATAX);
 }

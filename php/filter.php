@@ -27,5 +27,29 @@ $js = json_decode(file_get_contents("php://input"));
 		$DATAX[]=["name"=>'<i style="color:red">Ajouter Produit</i>',"txt"=>$txt,'id'=>"add"];
 	}
 	 echoJson($DATAX);
+}else  if($_REQUEST['action']=="ventes"){
+	$DATAX=array(); $txt=trim($_REQUEST['c']);$txt=strip_tags($txt);
+	$SQL="SELECT p.id,SUM(q) as qt,p.name,p.qn_min,s.prix_vente as prix FROM `".STOCK."` s LEFT JOIN ".PRODUCTS." p ON p.id=s.id_pr WHERE (`name`  LIKE :Q  OR `code`  LIKE :Q)  GROUP BY p.id   ORDER BY name ASC";
+	$data=SQL_QUERY($SQL." LIMIT 0,10",array(":Q"=>'%'.$txt.'%'));
+	
+	if($data['test']==true){foreach($data['data'] as $d){$d=demake($d);$d['prix']=(DOUBLE)$d['prix'];
+	$d['qt']=(INT)$d['qt'];
+	$d['namex']=strip_tags($d['name']);
+	$d['name']=strtoupper($d['name']).' <i style="color:red">'.num_form($d['prix']).' dhs</i> ';$DATAX[]=$d;}}
+
+	 echoJson($DATAX);
+}else  if($_REQUEST['action']=="code"){
+	$DATAX=array(); $code=trim($_REQUEST['code']);$code=strip_tags($code);
+	$SQL="SELECT p.id,SUM(q) as qt,p.name,p.qn_min,s.prix_vente as prix FROM `".STOCK."` s LEFT JOIN ".PRODUCTS." p ON p.id=s.id_pr WHERE p.code=:Q  GROUP BY p.id ";
+	$data=SQL_QUERY($SQL." LIMIT 0,1",array("Q"=>(int)$code));
+	
+	if($data['test']==true){foreach($data['data'] as $d){$d=demake($d);$d['prix']=(DOUBLE)$d['prix'];
+	$d['qt']=(INT)$d['qt'];$d['q']=1;
+	$DATAX[]=$d;}}
+
+	 echoJson($DATAX);
 }
+
+
+
  ?>

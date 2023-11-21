@@ -120,3 +120,48 @@ const isValidBarcode=function (value) {
             console.log("QZ:"+'No active connection with QZ exists.');
         }
     }
+	
+	function showNotif(msg,t){
+		$.growl({message:msg}, {type:"success",className: 'btn-xs btn-inverse',placement:{from: 'bottom',align:'left'},delay:2500,animate: {enter: 'animated bounceIn',exit: 'animated bounceOut'},offset: {x: 20,y: 50}});if(t==0){$("#printindicator").hide();}else{$("#printindicator").show();}
+	} 
+		function printRaw(info,newitem,session){var ITEMS=newitem.items||newitem.data.items||{};
+		
+var data = ['\x1B' + '\x40','\x1B' + '\x21' + '\x30','\x1B' + '\x61' + '\x31',info.name + '\x0A',info.name,'\x0A',info.name+'\x0A',info.name+'\x0A','\x1B' + '\x61' + '\x30','\x0A','\x0A','\x1B' + '\x45' + '\x0D','RECU N :'+newitem.n_facture+'\x0A', '\x1B' + '\x45' + '\x0A','\x1B\x61\x30',moment.utc().format("DD/MM/YYYY HH:mm:ss"),'\x0A',
+'\x1B\x61\x30Responsable :',newitem.cr];
+data.push("\x0A\x0A");
+data.push('\x1B' + '\x45' + '\x0D');//bold
+data.push(("Produits").padEnd(28,' ')+"Total".padEnd(7,' ')+"\x0A\x0A");data.push('\x1B' + '\x45' + '\x0A');//remove bold
+var TTC=0,TVA=0,RM=0,HT=0;
+angular.forEach(ITEMS,function(el,ind){el.rmx=el.prix-((el.rm*el.prix)/100);el.tt=parseFloat(el.tt);
+		var ht=Math.round((el.tt/((el.tva*0.01)+1))* 100) / 100;tva=Math.round(((ht*el.tva)/100)* 100) / 100;TTC+=el.tt;TVA+=tva;RM+=((el.prix*el.q)*el.rm)/100;HT+=ht;
+		el.name=(el.name+'').substr(0,23);el.qn=parseInt(el.q);el.ttt=(el.tt).toFixed(2)+''.substr(0,7);
+		var txt=(el.qn+"X "+el.name).padEnd(28,' ')+el.ttt.padEnd(7,' ') +"\x0A";
+		data.push(txt);
+	});
+data.push("\x0A\x1B\x61\x30");HT=(HT.toFixed(2)+"").padStart(7,' ');TVA=(TVA.toFixed(2)+"").padStart(7,' ');RM=(RM.toFixed(2)+"").padStart(7,' ');TTC=(TTC.toFixed(2)+"").padStart(7,' ');
+data.push("Nombre de produit :\x1B\x45\x0D"+ITEMS.length+'\x0A');data.push("\x0A\x1B\x61\x32");
+data.push('\x1B\x4D\x30'+'Total H.T'.padEnd(14,' ')+':\x1B\x45\x0D'+HT+'\x0A');data.push('Total TVA'.padEnd(14,' ')+':\x1B\x45\x0D'+TVA+'\x0A');
+data.push('Total REMISE'.padEnd(14,' ')+':\x1B\x45\x0D'+RM+'\x0A');data.push('Total TTC'.padEnd(14,' ')+':\x1B\x45\x0D'+TTC+'\x0A');data.push('\x0A\x1B\x61\x31\x0A');
+data.push('BONNE SANTE\x0A\x0A');
+var qr = newitem.id+";"+newitem.cr+";"+moment.utc().format("YYYY-MM-DD");;var dots = '\x09';var qrLength = qr.length + 3;var size1 =  String.fromCharCode(qrLength % 256);var size0 = String.fromCharCode(Math.floor(qrLength / 256));
+data.push(  '\x1D' + '\x28' + '\x6B' + '\x04' + '\x00' + '\x31' + '\x41' + '\x32' + '\x00'+
+   '\x1D' + '\x28' + '\x6B' + '\x03' + '\x00' + '\x31' + '\x43' + dots+
+   '\x1D' + '\x28' + '\x6B' + '\x03' + '\x00' + '\x31' + '\x45' + '\x30'+
+   '\x1D' + '\x28' + '\x6B' + size1 + size0 + '\x31' + '\x50' + '\x30' + qr+'\x1D' + '\x28' + '\x6B' + '\x03' + '\x00' + '\x31' + '\x51' +'\x30' +
+   '\x1D' + '\x28' + '\x6B' + '\x03' + '\x00' + '\x31' + '\x52' +'\x30' )
+data.push('\x1B\x61\x30');data.push('\x0A\x0A\x0A\x0A\x0A\x0A\x0A');data.push('\x1B\x69');
+
+var printer=JSON.parse(localStorage.getItem('LOCALCONFIG'));if(typeof printer.printer=="undefined" || printer.printer==""){
+	showNotif("Sélectionnez une imprimante dans les paramètres de l'application",0);return;
+}
+var config = qz.configs.create(printer.printer);
+if(qz.websocket.isActive()){showNotif("Impression en Cours",1);
+	qz.print(config,data).then(function(){showNotif("Impression terminer",0);
+}).catch(function(e) { console.error("QZ:"+e);$("#printindicator").hide(); });
+}else{
+	startConnection().then(function() {showNotif("Impression en Cours",1);
+		qz.print(config,data).then(function(){showNotif("Impression terminer",0);
+		}).catch(function(e) { console.error("QZ:"+e);$("#printindicator").hide(); });
+ }).catch(handleConnectionError);
+}
+}

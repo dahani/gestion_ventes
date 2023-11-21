@@ -32,6 +32,8 @@ if(chekAjax()){
 	$DL=$infos->config->t_expire;
 	$notif=SQL_QUERY("SELECT COUNT(*) cnt FROM  ".STOCK." WHERE DATEDIFF(`date_pre`,NOW()) BETWEEN 0 AND ".($DL*30)." ");if($notif['test'] && $notif['data']){$notif=$notif['data'][0]['cnt'];}else{$notif=0;};if($notif>0){$notification[]=array("href"=>"#/notifications","name"=>" Expiration des produits","text"=>"({$notif}) Produits expire dans moins de (<".$DL." Mois)");}
 		
+	/*produits fini stock*/
+	$notif=SQL_QUERY("SELECT COUNT(*) cnt FROM (SELECT p.id,SUM(q) as q,p.name,p.qn_min FROM `".STOCK."` s LEFT JOIN ".PRODUCTS." p ON p.id=s.id_pr GROUP BY p.id HAVING q<=qn_min)  t");if($notif['data']){$notif=$PRFINI=$notif['data'][0]['cnt'];}else{$notif=0;};if($notif>0){$notification[]=array("href"=>"#/notifications","name"=>" Produits stock","text"=>"({$notif}) Produits fini  dans le stock");}
 		
 $stq=json_decode('[]',true);
 	return array("notif"=>$notification,"stq"=>$stq,"msg"=>array("count"=>1,"data"=>[]));

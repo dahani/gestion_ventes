@@ -4,7 +4,7 @@
 <div class="smallloading" ng-if="LoaDing"></div>
 <div class="listview lv-bordered lv-lg">
 <div class="lv-header-alt clearfix " style="background: #009adb!important;">
-<h2 class="lvh-label"><div > <i class="zmdi zmdi-notifications m-r-10"></i> Notifications ({{DATA.exp.length}})</div></h2>
+<h2 class="lvh-label"><div > <i class="zmdi zmdi-notifications m-r-10"></i> Notifications ({{DATA.exp.length+DATA.runOut.length}})</div></h2>
 <div class="lvh-search" ng-show="listviewSearchStat">
 <i ng-click="listviewSearchStat = !listviewSearchStat" class="ah-search-close zmdi zmdi-long-arrow-left" ></i>
 <input type="text" placeholder="Recherche dans la liste"  ng-keyup="$event.keyCode==27?listviewSearchStat =false:''" focus-me="listviewSearchStat" ng-model="serchfield"  class="lvhs-input" />
@@ -28,6 +28,23 @@
 <div class="media-body">
 <div class="pull-right hidden-xs"><a  data-ui-sref="app.produits" >Liste des Produits</a></div>
 <div class="lgi-heading"><b>{{x.pr}}</b> - Fournisseur : <b> {{x.frn}}</b>- Date péremption : <b> {{x.date_pre|date:'EEEE dd LLLL yyyy'}}</b> </div>
+</div>
+</div>
+</div>
+</div>
+
+<div ng-show="DATA.runOut.length>0">
+<div class="card-header p-b-0 p-10 " ng-random-class style="cursor: pointer;" >
+<h2 ng-click="runOut = !runOut">Produits fini  dans le stock ({{DATA.runOut.length}}) </h2> 
+</div>
+<div class="list-group lg-alt lg-even-black o-hidden" uib-collapse="!runOut">
+<div class="list-group-item media no-animate" ng-repeat="x in DATA.runOut | filter:serchfield track by $index" >
+<div class="pull-left">
+<div ng-random-class class="avatar-char z-depth-1">{{x.name|capitalize}}</div>
+</div>
+<div class="media-body">
+<div class="pull-right hidden-xs"><a  data-ui-sref="app.produits" >Liste des Produits</a></div>
+<div class="lgi-heading"><b>{{x.name}}</b> - Quantité Reste : <b> {{x.q}}</b>- Quantité Min : <b> {{x.qn_min}}</b> </div>
 </div>
 </div>
 </div>

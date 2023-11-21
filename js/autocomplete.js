@@ -321,7 +321,6 @@ angular.module('angucomplete', []).directive('angucomplete', function($parse, $h
 			$scope.change=true;
 			$scope.changexx=function(){
 				if(!$scope.change){$scope.change=true;return};
-				console.log($scope.searchStr,$scope.selectedObject)
 				var str=$scope.searchStr||"";
 				if (str.length >= $scope.minLength) {
                     $scope.searching = true;

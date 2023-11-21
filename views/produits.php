@@ -56,27 +56,32 @@
 		<div class="card-body p-10">
 		<div class="row ">
 			<div class="col-md-2"><img class="avatar" ng-src="img/120/120/produits/{{CLX.img}}&df=product_photo.png" /></div>
-			<div class="col-md-5"><ul class="ulinfo"><li>Code barre  : <b>{{CLX.code}}</b></li><li>Nom : <b>{{CLX.name}}</b></li>
-				<li>DCI : <b>{{CLX.dci}}</b></li>
-				<li>Présentation : <b>{{CLX.presentation}}</b></li>
-				<li>Taux remboursement : <b>{{CLX.taux}}</b></li>
-				<li>PRINCEPS_GENERIQUE : <b>{{CLX.pr}}</b></li>
+			<div class="col-md-5"><ul class="ulinfo">
+			<li>Code barre  : <b>{{CLX.code}}</b></li>
+			<li>Nom : <b>{{CLX.name}}</b></li>
 			</ul></div>
-			<div class="col-md-5"><ul class="ulinfo"><li>Dose : <b>{{CLX.dose}}</b></li></ul>
-			<ul class="ulinfo"><li>Unite : <b>{{CLX.unite}}</b></li>
-			<li>Forme : <b>{{CLX.form}}</b></li>
-			<li>Prix br : <b>{{CLX.prix_br|currency}}</b></li>
-			<li>Gammes : <b>{{CLX.gm}}</b></li>
+			<div class="col-md-5"><ul class="ulinfo">
+			<li>Nom : <b>{{CLX.name}}</b></li></ul>
 			</ul>
 			</div>
 		</div>
 		<div class="clearfix"></div>
 	</div>
 	</div>
-	
-	<div class="card"><div class="card-header "><h2>Entree </h2></div>
+	<div class="card" >
+<div class="card-body p-10 c-white bgm-green">
+	<fieldset class="m-0"><legend class="facture">Quantité</legend>
+	<div class="row">
+	<div class="col-md-4 text-center"><p>VENTES</p><p class="bigDigit">{{CLX.vt}}</p></div>
+	<div class="col-md-4 text-center"><p>ACHATS</p><p class="bigDigit">{{CLX.ach}}</p></div>
+	<div class="col-md-4 text-center"><p>RESTE</p><p class="bigDigit">{{CLX.ach-CLX.vt}}</p></div>
+	</div>
+	</fieldset>
+</div>
+</div>
+	<div class="card"><div class="card-header "><h2>Ventes </h2></div>
 		<div class="card-body p-0">
-		<table-directive-static data-opts="LOTS" idx="CLX.id" ></table-directive-static>
+		<table-directive-static data-opts="VENTES" idx="CLX.id" ></table-directive-static>
 		<div class="clearfix"></div>
 	</div>
 	</div>
@@ -86,21 +91,10 @@
 	<div class="card">
 		<div class="card-header bgm-green"><h2>{{CLX.name}}</b> <a  class="p-absolute pull-right" style="    font-size: 34px;right: 14px;top: 11px;"   ng-click="cancellx();" href="#"><i class="zmdi zmdi-reply"></i></a></h2></div>
 			<div class="card-body p-10 c-white  moneyBg bgm-green">
-				<p>Prix</p><p class="bigDigit">{{CLX.ppv|currency:''}}</p>
-				<p>Quantité</p><p class="bigDigit">{{CLX.ph|currency:''}}</p>
+				<p>Prix</p><p class="bigDigit">{{CLX.prix|currency:''}}</p>
 			</div>
 		</div>
-		<div class="card">
-		<div class="card-header bgm-blue"><h2>Quantité</b></h2></div>
-			<div class="card-body p-10 c-white  moneyBg bgm-blue" style="background-image: none;">
-			<div class="row">
-			<div class="col-md-4 text-center"><p class=" f-20">Total achats</p><p class="bigDigit">{{CLX.str.qn}}</p></div><div class="col-md-4 text-center"><p class=" f-20">Total Sortie</p><p class="bigDigit">{{CLX.str.s}}</p></div><div class="col-md-4 text-center"><p class=" f-20">Total Ventes</p><p class="bigDigit">{{CLX.str.v}}</p></div>
-			</div>
-			<div class="row">
-			<div class="col-md-6 text-center"><p class=" f-20">Total En magasin</p><p class="bigDigit">{{CLX.str.s-CLX.str.v}}</p></div><div class="col-md-6 text-center"><p class=" f-20">Total En Stock</p><p class="bigDigit">{{CLX.str.qn-CLX.str.s}}</p></div>
-			</div>	
-			</div>
-		</div>
+		
 		<div class="card">
 		<div class="card-header bgm-blue"><h2>Options</h2></div>
 			<div class="card-body ">

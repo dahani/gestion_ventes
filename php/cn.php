@@ -29,11 +29,13 @@ define("SESSIONS",TABLE_PREFIX."sessions");
 define("FOURNISSEURS",TABLE_PREFIX."fournisseurs");
 define("NOTIFICATIONS",TABLE_PREFIX."notifications");
 define("TYPE_DEP",TABLE_PREFIX."config_type_depenses");
-define("VENTES",TABLE_PREFIX."commande_article");
+define("CMD_ARTICLE",TABLE_PREFIX."commande_article");
 define("COMMANDES",TABLE_PREFIX."commandes");
 define("DEPENSES",TABLE_PREFIX."depenses");
 define("STOCK",TABLE_PREFIX."stock");
 define("PRODUCTS",TABLE_PREFIX."products");
+define("PRODUCTS_STATE",TABLE_PREFIX."products_state");
+
 
 define("ONE_SIGNEL_AUTH","Zjc0OTdlNjEtMTQ0OC00ZDcxLTk3OTQtOWMwOTNkNGEyMjM2");
 define("ONE_SIGNEL_AP_ID","05e10fef-e24b-4945-8e21-4de6768b6e17");
@@ -66,6 +68,18 @@ $r=json_decode($response->getBody(),true);
 function isDateInFuture($date):bool{
     $now=new DateTime();$dtx=new DateTime($date);
 	return $dtx>$now;
+}
+function generateEAN()
+{
+    $time =time();$time=substr($time,-9);
+    $code = '611' . str_pad($time, 9, '0');
+    $weightflag = true; $sum = 0;
+    for ($i = strlen($code) - 1; $i >= 0; $i--) {
+        $sum += (int)$code[$i] * ($weightflag ? 3 : 1);
+        $weightflag = !$weightflag;
+    }
+    $code .= (10 - ($sum % 10)) % 10;
+    return $code;
 }
 function SendNotification($inf,$extra){
 	$client = new \GuzzleHttp\Client(['http_errors' => false]);

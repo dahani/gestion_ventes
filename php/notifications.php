@@ -7,6 +7,14 @@ if(chekAjax()){
 	if($chks['test']==true){$tt+=count($chks['data']);foreach($chks['data'] as $n){$n=demake($n);
 	$notification['exp'][]=$n;}
 	}
+	
+	
+
+	
+	/*produits fini stock*/
+	$notif=SQL_QUERY("SELECT p.id,SUM(q) as q,p.name,p.qn_min FROM `".STOCK."` s LEFT JOIN ".PRODUCTS." p ON p.id=s.id_pr GROUP BY p.id HAVING q<=qn_min  ");
+	$notification['runOut']=$notif['test']?$notif['data']:[];
+	
 	return $notification;
 	}
 	 if($_REQUEST['action']=="load"){

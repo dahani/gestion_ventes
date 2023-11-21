@@ -4,7 +4,8 @@
         "phpoffice/phpword": "^0.18.3",
         "spipu/html2pdf": "^5.2",
         "phpmailer/phpmailer": "^6.6",
-        "spatie/image": "^2.2"
+        "spatie/image": "^2.2",
+        "picqer/php-barcode-generator": "^2.4"
     },
     "config": {
         "platform": {

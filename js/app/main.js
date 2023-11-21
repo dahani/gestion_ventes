@@ -414,19 +414,14 @@ $scope.functionx=function(x,td,ev){
 
 $scope.modify=function(){$scope.INFO=false;}
 
-$scope.LOTS={serchfield:'',autoLoad:false,currentPage:1,TOTALITEMS:0,DATA:[],pageSize:10,id:$scope.DOSSIER,index:true,class:' teal hover ',sort:{sortBy:''},ajax:{url:$scope.URL+"?action=lots"},columns:[{name:"Lot n°",value:"lot",orderable:true},{name:"N° Facture",value:"bl",orderable:true},{name:"Date Entrée",value:"date_en",orderable:true,filter:"date#dd/MM/yyyy"},{name:"Total",value:"total",orderable:true,sum:true},{name:"Quantité",value:"qn",orderable:true,sum:true},{name:"Date péremption",value:"date_pre",orderable:true,filter:"date#dd/MM/yyyy"},{name:"Remarque",value:"rm",orderable:true},{name:"Saisie par",value:"name"}]
-}
 
-$scope.INV={serchfield:'',autoLoad:false,currentPage:1,TOTALITEMS:0,DATA:[],pageSize:10,id:$scope.DOSSIER,index:true,class:' teal hover ',sort:{sortBy:''},ajax:{url:$scope.URL+"?action=inv"},columns:[{name:"Lot",value:"lot",orderable:true},{name:"Q. Entrée",value:"qn",orderable:true,class:"p-relative",sum:true},{name:"Q.Sortie",value:"sortie",orderable:true,class:"p-relative",sum:true},{name:"Q.Vendu",value:"vente",orderable:true,class:"p-relative",sum:true},{name:"En magasin (Reste)",value:"rmg",orderable:true,sum:true},{name:"En Stock (Reste)",value:"rst",orderable:true,sum:true}]
-}
 
-$scope.SORTIE={serchfield:'',autoLoad:false,currentPage:1,TOTALITEMS:0,DATA:[],pageSize:10,id:$scope.DOSSIER,index:true,class:' teal hover ',sort:{sortBy:''},ajax:{url:$scope.URL+"?action=sortie"},columns:[{name:"Date Sortie",value:"date_sortie",orderable:true,filter:'date#dd/MM/yyyy'},{name:"Lot",value:"lot",orderable:true},{name:"Quantité",value:"q",orderable:true,sum:true},{name:"Bénéficiaire",value:"bn",orderable:true},{name:"Sortie par",value:"resp",orderable:true}]
+
+$scope.VENTES={serchfield:'',autoLoad:false,currentPage:1,TOTALITEMS:0,DATA:[],pageSize:10,id:$scope.DOSSIER,index:true,class:' teal hover ',sort:{sortBy:''},ajax:{url:$scope.URL+"?action=vente"},columns:[{name:"Date Vente",value:"date_vente",orderable:true,filter:'date#dd/MM/yyyy'},{name:"Quantité",value:"q",orderable:true,sum:true},{name:"N° ",value:"n_facture",orderable:true},{name:"Prix",value:"prix",orderable:true},{name:"Vendus par",value:"resp",orderable:true}]
 }
 
 $scope.infosAll=function(id,code){$scope.kdenkleeze = true; $http.post($scope.URL+"?action=getall",{id:id,code:code}).then(function(e){$scope.selectedItem=$scope.CLX=e.data.data;
-	$scope.LOTS.DATA=$scope.CLX.lots.d;$scope.LOTS.TOTALITEMS=$scope.CLX.lots.count;
-	$scope.INV.DATA=$scope.CLX.inv.d;$scope.INV.TOTALITEMS=$scope.CLX.inv.count;
-	$scope.SORTIE.DATA=$scope.CLX.sortie.d;$scope.SORTIE.TOTALITEMS=$scope.CLX.sortie.count;
+$scope.VENTES.DATA=$scope.CLX.ventes.d;$scope.VENTES.TOTALITEMS=$scope.CLX.ventes.count;
 	$scope.CURPAGE=4;$scope.class='Right';$scope.kdenkleeze = false;},function(){$scope.kdenkleeze = false;});
 }
 $scope.$on("app.produits",function(ev,data){$scope.infosAll(data.id);})
@@ -479,7 +474,7 @@ if($scope.LOCALCONFIG.printicket==true){startConnection();}
 
 $scope.chsdz=function(v,ind){if(!IS_MOBILE){if($scope.LOCALCONFIG.printicket==true){startConnection();}else{endConnection();}};localStorage.setItem("LOCALCONFIG",JSON.stringify($scope.LOCALCONFIG));}
 $scope.looacode=function(sCode){$scope.LoaDing = true;
-	 $http.post("php/filter?action=code", {code:sCode}).then(function(res) {$scope.LoaDing = false;
+	 $http.post("php/filter?action=code&code="+sCode, {code:sCode}).then(function(res) {console.log(res);$scope.LoaDing = false;
 	if(typeof res.data[0]!="undefined"){$scope.TMP=angular.copy(res.data[0]);if($scope.LOCALCONFIG.AutoSelect){$scope.add_line();}else{$scope.txnshe=$scope.TMP.name;}}
 	},function(res) {$scope.LoaDing =false;});
 	}
@@ -487,7 +482,7 @@ $scope.onLoad=function(d){$scope.lastnum=d.num;}
 $scope.$on('DELETE_DATATABLE', function(event, data){$scope.lastnum=data.data.data.num;});
 $scope.onSelect = function (r) {$scope.TMP=angular.copy(r.obj);$scope.TMP.name=$scope.TMP.namex;$scope.TMP.q=1;if($scope.LOCALCONFIG.AutoSelect){$scope.add_line();};$("input.qntt")[0].focus()}
 
-/*onScan.attachTo(document, {
+onScan.attachTo(document, {
 suffixKeyCodes: [13],
 onKeyDetect:function(){return false},
 reactToPaste: true, 
@@ -497,7 +492,7 @@ onScan: function(sCode, iQty) {console.log(sCode, iQty);
 },
 onScanError: function(oDebug) { console.log('onScanError: ',oDebug); },
 onScanButtonLongPress: function() { console.log('onScanButtonLongPress: '); }
-});*/
+});
 
 $scope.add_ligne=function(){$scope.dizabled=false;$scope.INFO=false;$scope.TMP={};$scope.STAST={};$scope.NEWITEM={ch:{},mode_p:"1",n_facture:$scope.lastnum,items:[],date_vente:new Date(),cr:$scope.SESSX.name};$scope.selectedItem= null ;$scope.class='Right';$scope.CURPAGE=1;if(!IS_MOBILE){$timeout(function() {$(".autocompletedh input.getfocus")[0].focus()},300)}}
 $scope.add_line=function(){
@@ -505,7 +500,7 @@ $scope.add_line=function(){
 	if($scope.TMP.q>$scope.TMP.qt){growlService.growl("La quantité saisie est supérieur de la quantité disponible ",'danger');$scope.TMP.q=$scope.TMP.qt;}
 	if(typeoof($scope.TMP.id) || typeoof($scope.TMP.q)){growlService.growl("Sélectionnez un produit et une quantité différente de 0",'danger');return false;}
 	var ty=$scope.checkinarray($scope.TMP);
-	if(ty==22){growlService.growl("La quantité saisie est supérieur de la quantité disponible ",'danger');return;}
+	if(ty==22){growlService.growl("La quantité saisie est supérieur de la quantité disponiblex ",'danger');return;}
 	if(ty==true){$scope.TMP={};$scope.txnshe="";return;};$scope.TMP.rm=$scope.TMP.rm||0;
 	$scope.TMP.rm=($scope.LOCALCONFIG.isper)?$scope.TMP.rm:parseFloat((($scope.TMP.rm/$scope.TMP.prix)*100).toFixed(2));
 	$scope.TMP.tt=(($scope.TMP.prix*$scope.TMP.q)-($scope.TMP.prix*$scope.TMP.rm*$scope.TMP.q)/100).toFixed(2);
@@ -515,9 +510,8 @@ $scope.SetClient = function (r) {$scope.STAST=r.obj;}
 
 $scope.Q_change = function () {if($scope.TMP.q>$scope.TMP.qt){growlService.growl("La quantité saisie est supérieur de la quantité disponible ",'info');$scope.TMP.q=$scope.TMP.qt;}}
 $scope.checkinarray=function(d){var v=false;angular.forEach( $scope.NEWITEM.items, function(value, key) {if( value.id==d.id){
-	$dt=(value.xxx=="undefined")?d.q>value.qt:(d.q+value.q)>value.qt;
-	if($dt){return v=22; }else{$scope.NEWITEM.items[key].q+=d.q;
-		$scope.NEWITEM.items[key].tt=(($scope.NEWITEM.items[key].prix*$scope.NEWITEM.items[key].q)-($scope.NEWITEM.items[key].prix*$scope.NEWITEM.items[key].rm*$scope.NEWITEM.items[key].q)/100).toFixed(2);v=true;return true;}}});return v;}
+	$scope.NEWITEM.items[key].q+=d.q;
+		$scope.NEWITEM.items[key].tt=(($scope.NEWITEM.items[key].prix*$scope.NEWITEM.items[key].q)-($scope.NEWITEM.items[key].prix*$scope.NEWITEM.items[key].rm*$scope.NEWITEM.items[key].q)/100).toFixed(2);v=true;return true;}});return v;}
 $scope.delet=function(x,id){if(typeoof(id)){$scope.NEWITEM.items.splice(x,1); }else{
 	iosAlertView.confirm('êtes vous sûr de supprimer ?').then(function(p) {                
 	if (p!==null) {$scope.LoaDing = true;
@@ -528,27 +522,19 @@ $scope.save=function(){
 	if($scope.NEWITEM.total+$scope.STAST.reste>$scope.STAST.crpl && $scope.NEWITEM.mode_p==3){if(!confirm('le Plafond de credit sera dépassé après cette transaction. Souhaitez vous continuer')){return;}else{$scope.NEWITEM.crd={crpl:$scope.STAST.crpl,reste:$scope.NEWITEM.total+$scope.STAST.reste};}}
 	if(typeoof($scope.NEWITEM.date_vente)){growlService.growl("Entrez date Vente",'danger');return false;}
 	if($scope.NEWITEM.items.length==0){growlService.growl("Entrez au moins un article ",'danger');return false;};
-	if($scope.NEWITEM.mode_p==2 && typeof $scope.NEWITEM.id=="undefined"){
-		if(typeoof($scope.NEWITEM.ch.date_ch)){
-			growlService.growl("Ajouter la date d'encaissement du chèque ",'danger');
-		$scope.instance=$uibModal.open({animation: true,templateUrl: 'chaquedata.html',size: "md",backdrop: "static",keyboard: false});
-		return false;
-		}}
-	if(($scope.NEWITEM.mode_p==3 ||$scope.NEWITEM.mode_p==2) && typeof $scope.NEWITEM.id_cl=="undefined"){
-		growlService.growl("Ajouter un client",'danger');return;
-	}
-	$rootScope.loadinng = true;
-	$http.post($scope.URL+"?action=save_edit",{data:$scope.NEWITEM,q:$scope.serchfield,pg:$scope.currentPage,psiz:$scope.pageSize}).then(function(e){if(e.data.test){
-		if($scope.LOCALCONFIG.printicket==true){printRaw($scope.INFOss,angular.copy($scope.NEWITEM),$scope.SESSX);}
-		
-		
+
+	
+	$rootScope.loadinng = true;var tmp=angular.copy($scope.NEWITEM);
+	$http.post($scope.URL+"?action=save_edit",{data:tmp,q:$scope.serchfield,pg:$scope.currentPage,psiz:$scope.pageSize}).then(function(e){if(e.data.test){
+
 		growlService.growl("Bien Enregistrer", 'success');$scope.DATA=e.data.data.d;$scope.TOTALITEMS=e.data.data.count;$scope.lastnum=e.data.data.num;$rootScope.loadinng = false;$scope.TMP={};
-	if($scope.NEWITEM.id || $scope.LOCALCONFIG.backToList){$scope.NEWITEM=null;$scope.selectedItem=null;$scope.CURPAGE=0;}
+		if($scope.LOCALCONFIG.printicket==true){printRaw($scope.INFOss,angular.copy($scope.NEWITEM),$scope.SESSX);}
+	if(tmp.id || $scope.LOCALCONFIG.backToList){$scope.NEWITEM=null;$scope.selectedItem=null;$scope.CURPAGE=0;}
 	else{$scope.NEWITEM={mode_p:"1",n_facture:$scope.lastnum,items:[],date_vente:new Date(),cr:LOADAPPINFOSERVICE.getSession()['name']};}
 	}else{growlService.growl(e.data.errors||"Erreurs ...!", 'danger')};$rootScope.loadinng=false;
 	},function(){ growlService.growl("Pas de connexion Internet...!", 'danger',5000);$rootScope.loadinng = false;});
 }
-$scope.$on('$destroy', function(){console.log('$destroy');endConnection();t/*ry{onScan.detachFrom(document)}catch{}*/});$scope.SHORTCUTS=[];
+$scope.$on('$destroy', function(){console.log('$destroy');endConnection();try{onScan.detachFrom(document)}catch{}});$scope.SHORTCUTS=[];
 $scope.infosAll=function(s){if ($scope.selectedItem != null) {$scope.TMP={};
 $scope.INFO=(typeof s=="undefined");var tmp=$scope.selectedItem;$rootScope.loadinng = true; $http.post($scope.URL+"?action=getall",{id:tmp.id,idcl:tmp.id_cl}).then(function(e){$scope.INFOS=angular.copy(tmp);$scope.INFOS.data=e.data;$scope.INFOS.CALC={total:0,tva:0,rm:0,ht:0}
 angular.forEach($scope.INFOS.data.items,function(el,ind){el.rmx=el.prix-((el.rm*el.prix)/100);
@@ -560,10 +546,7 @@ angular.forEach($scope.INFOS.data.items,function(el,ind){el.rmx=el.prix-((el.rm*
 })
 $scope.CURPAGE=2;$scope.class='Right';$rootScope.loadinng = false;},function(){$rootScope.loadinng = false;});
 }else{growlService.growl("Sélectionner une ligne ...!", 'danger');}}
-$scope.infos=function(s){if ($scope.selectedItem != null) {$scope.dizabled=false; if(typeof s=="undefined"){$scope.infosAll();return;}
-$scope.INFO=(typeof s=="undefined");var tmp=$scope.selectedItem;tmp.date_vente=new Date(tmp.date_vente);
-$rootScope.loadinng = true;$http.post($scope.URL+"?action=get&id="+tmp.id).then(function(e){$scope.selectedItem.items=e.data;$scope.NEWITEM=angular.copy(tmp);$scope.CURPAGE=1;$scope.class='Right';$rootScope.loadinng = false;},function(){$rootScope.loadinng = false;});
-}else{growlService.growl("Sélectionner une ligne ...!", 'danger');}}
+
 $scope.cancellx=function(){$scope.class="Left";$scope.CURPAGE=0;$scope.selectedItem=null,$scope.NEWITEM={};}
 }).controller('achatsCtrl',  function($uibModal,$scope,$document,hotkeys,LOADAPPINFOSERVICE,$timeout,$state,iosAlertView,growlService,$http,$stateParams) {$scope.PERMISSON=LOADAPPINFOSERVICE.getPermission($state.$current.name);$scope.URL="php/achats";$scope.CURPAGE=0;$scope.currentPage=1;$scope.TOTALITEMS=0;$scope.DATA=[];$scope.pageSize=10;$scope.NEWITEM={}; $scope.listviewSearchStat = false;$scope.dizabled=false;$scope.mois="-1";$scope.excercice=new Date().getFullYear().toString();
 $opt={animation: true,templateUrl: 'editentree.html',scope: $scope,size: "md",backdrop: "static",keyboard: false};$scope.extra={};
